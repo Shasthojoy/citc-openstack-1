@@ -1,0 +1,12 @@
+- name: shutdown the high speed interfaces
+  command: ifdown --force -a --allow=ansible
+  become: true
+  ignore_errors: yes
+
+- name: remove any configuration that we put there
+  blockinfile:
+    dest: /etc/network/interfaces
+    marker: "# {mark} ANSIBLE MANAGED BLOCK fabric"
+    state: absent
+  become: true
+

@@ -1,0 +1,14 @@
+- name: Clean up the networking stuff
+  nclu:
+    commands:
+    - del all
+    atomic: true
+    description: remove all networking configuration
+
+- name: reboot if mgmt VRF was enabled
+  command: ip addr show dev mgmt
+  ignore_errors: yes
+  register: MGMT_VRF_CHECK
+  changed_when: false
+- include: "{{ inventory_dir }}/roles/switch-common/tasks/reboot.yaml"
+  when: MGMT_VRF_CHECK.stdout.find('inet 127.0.0.1/8 scope host mgmt') != -1

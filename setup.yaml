@@ -1,0 +1,38 @@
+---
+- hosts: oob-mgmt-server
+  roles:
+  - internet
+
+- hosts: switches
+  roles:
+  - switch-common
+
+- hosts: leaf01,leaf02
+  roles:
+  - l3-leaf
+
+- hosts: spines
+  roles:
+  - l3-spine
+
+- hosts: leaf03,leaf04
+  roles:
+  - l3-leaf
+
+- hosts: servers
+  roles:
+  - server-common
+  become: true
+
+# - hosts: server01
+#   roles:
+#   - openstack-controller
+#   become: true
+# 
+# - hosts: server02, server03, server04
+#   roles:
+#   - openstack-compute
+#   become: true
+...
+
+ 

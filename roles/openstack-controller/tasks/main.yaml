@@ -1,0 +1,9 @@
+mysql.yaml
+rabbitmq.yaml
+memcached.yaml
+openstack-keystone.yaml
+openstack-glance.yaml
+openstack-neutron-controller.yaml
+openstack-nova-controller.yaml
+openstack-horizon.yaml
+openstack-initial-config.yaml
