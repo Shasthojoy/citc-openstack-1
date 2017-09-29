@@ -1,9 +1,11 @@
-
 - name: create environment scripts
-  template: src={{item}}.j2 dest=/home/cumulus/{{item}} mode=0777
+  template:
+    src: "{{ item }}.j2"
+    dest: "/home/cumulus/{{ item }}
+    mode: 0777
   with_items:
-      - admin-openrc
-      - demo-openrc
+  - admin-openrc
+  - demo-openrc
 
 - name: collect flavors
   command: openstack {{ openstack.admin_credentials }} flavor list
@@ -40,3 +42,4 @@
 - name: add subnet to provider network
   command: neutron {{openstack.neutron_credentials}} subnet-create --name provider --allocation-pool start={{openstack.provider_network.start}},end={{openstack.provider_network.end}} --dns-nameserver 8.8.4.4 --gateway {{openstack.provider_network.gateway}} provider {{openstack.provider_network.cidr}}
   when: "'m1.nano' not in _flavors.stdout"
+

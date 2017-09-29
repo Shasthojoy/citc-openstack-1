@@ -1,12 +1,18 @@
-- name: install packages
-  apt: pkg={{item}} state=present update_cache=yes
-  with_items:
-    - glance
-    - python-openstackclient
+---
 
-# Install and configure Glance
+# Install and prep keystone
+#
+- name: install glance
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - glance
+
 - name: create a table for glance
-  mysql_db: name=glance state=present
+  mysql_db:
+    name: glance
+    state: present
 
 - name: enable db access 1
   command: mysql -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'localhost' IDENTIFIED BY '{{ openstack.admin_password }}';"
@@ -15,17 +21,19 @@
   command: mysql  -e "GRANT ALL PRIVILEGES ON glance.* TO 'glance'@'%' IDENTIFIED BY '{{openstack.admin_password}}';"
 
 - name: glance config files
-  template: src={{item}}.j2 dest=/etc/glance/{{item}}
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/glance/{{item}}"
   with_items:
-      - glance-api.conf
-      - glance-registry.conf
+  - glance-api.conf
+  - glance-registry.conf
 
 - name: glance dbsync
   shell: su -s /bin/sh -c "glance-manage db_sync" glance
 
 - name: restart glance
   service:
-    name: {{ item }}
+    name: "{{ item }}"
     state: restarted
     enabled: true
   with_items:
@@ -35,6 +43,7 @@
     seconds: 10
 
 # Create glance user, service, and endpoint
+#
 - name: collect services
   command: openstack {{ openstack.args }} service list
   register: _services
@@ -70,18 +79,18 @@
 - name: add glance endpoints
   command: openstack {{openstack.args}} endpoint create --region RegionOne image {{item.a}} http://controller:{{ item.b }}
   with_items:
-      - {a: "public", b: 9292}
-      - {a: "internal", b: 9292}
-      - {a: "admin", b: 9292}
+  - {a: "public", b: 9292}
+  - {a: "internal", b: 9292}
+  - {a: "admin", b: 9292}
   when: "'glance' not in _services.stdout"
 
 - name: wait for glance to wake up
-  pause: seconds=10
-
+  pause:
+    seconds: 10
 
 
 # Now add a basic image.
-
+#
 - name: collect images
   command: openstack {{ openstack.admin_credentials }} image list
   register: _images
@@ -97,3 +106,4 @@
   command: openstack {{ openstack.admin_credentials }} image create "cirros" --file /tmp/cirros-0.3.3-x86_64-disk.img  --disk-format qcow2 --container-format bare --public
   when: "'cirros' not in _images.stdout"
 
+...

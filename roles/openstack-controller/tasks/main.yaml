@@ -1,9 +1,26 @@
-mysql.yaml
-rabbitmq.yaml
-memcached.yaml
-openstack-keystone.yaml
-openstack-glance.yaml
-openstack-neutron-controller.yaml
-openstack-nova-controller.yaml
-openstack-horizon.yaml
-openstack-initial-config.yaml
+#-------------------------------------------------------------------------------
+#
+# Copyright 2017 Cumulus Networks Inc.  All rights reserved
+#
+#-------------------------------------------------------------------------------
+#
+# Broken into separate files because there are some gnarly steps involved with
+# some of these.
+#
+
+- name: Common OpenStack Packages
+  apt:
+    name: "{{ item }}"
+    state: present
+   with_items:
+   - python-openstackclient
+
+- include: mysql.yaml
+- include: rabbitmq.yaml
+- include: memcached.yaml
+- include: openstack-keystone.yaml
+- include: openstack-glance.yaml
+- include: openstack-neutron-controller.yaml
+- include: openstack-nova-controller.yaml
+- include: openstack-horizon.yaml
+- include: openstack-initial-config.yaml
