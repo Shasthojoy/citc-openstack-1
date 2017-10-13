@@ -55,7 +55,7 @@
   - neutron-metadata-agent
   - neutron-l3-agent
 - pause:
-    seconds; 10
+    seconds: 10
 
 # Create neutron user, service, and endpoint
 #

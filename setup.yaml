@@ -24,10 +24,10 @@
   - server-common
   become: true
 
-# - hosts: server01
-#   roles:
-#   - openstack-controller
-#   become: true
+- hosts: server01
+  roles:
+  - openstack-controller
+  become: true
 # 
 # - hosts: server02, server03, server04
 #   roles:
