@@ -15,11 +15,13 @@
     dest: "/etc/openstack-dashboard/{{ item }}"
   with_items:
   - local_settings.py
+  register: apache2_restart
 
 - name: restart apache2
   service:
     name: apache2
-    state; restarted
+    state: restarted
     enabled: true
+  when: apache2_restart|changed
 
 ...

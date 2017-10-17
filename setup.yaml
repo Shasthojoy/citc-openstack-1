@@ -28,11 +28,11 @@
   roles:
   - openstack-controller
   become: true
-# 
-# - hosts: server02, server03, server04
-#   roles:
-#   - openstack-compute
-#   become: true
+
+- hosts: server02, server03, server04
+  roles:
+  - openstack-compute
+  become: true
 ...
 
  

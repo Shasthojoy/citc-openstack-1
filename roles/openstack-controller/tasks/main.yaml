@@ -19,6 +19,6 @@
 - include: openstack-keystone.yaml
 - include: openstack-glance.yaml
 - include: openstack-neutron-controller.yaml
-# - include: openstack-nova-controller.yaml
-# - include: openstack-horizon.yaml
-# - include: openstack-initial-config.yaml
+- include: openstack-nova-controller.yaml
+- include: openstack-horizon.yaml
+- include: openstack-initial-config.yaml
