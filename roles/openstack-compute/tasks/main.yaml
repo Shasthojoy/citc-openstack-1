@@ -46,7 +46,7 @@
     enabled: true
   when: neutron_ml2_restart | changed
 - service:
-    name: neutron-l3-agent
+    name: nova-compute
     state: restarted
     enabled: true
   when: ( nova_config_restart | changed ) or ( nova_compute_restart | changed )
