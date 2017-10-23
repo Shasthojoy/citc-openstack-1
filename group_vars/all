@@ -5,9 +5,8 @@ ansible_become_pass: "CumulusLinux!"
 # Mesos Configuration
 #
 
-MESOS_MASTER: server01
-MESOS_UI:     5050
-MARATHON_UI:  8080
+CONTROLLER:  server01
+HORIZON_UI:  80
 
 #
 # Global connectivity options

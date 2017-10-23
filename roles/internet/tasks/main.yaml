@@ -35,26 +35,16 @@
     insertbefore: "exit 0"
     marker: "# {mark} ANSIBLE MANAGED BLOCK UI DNAT"
     block: |
-      /sbin/iptables -t nat -A PREROUTING -p tcp --dport {{ MESOS_UI }} --in-interface eth0 -j DNAT --to-destination {{ servervars[ MESOS_MASTER ].V4 }}:{{ MESOS_UI }}
-      /sbin/iptables -t nat -A PREROUTING -p tcp --dport {{ MARATHON_UI }} --in-interface eth0 -j DNAT --to-destination {{ servervars[ MESOS_MASTER ].V4 }}:{{ MARATHON_UI }}
+      /sbin/iptables -t nat -A PREROUTING -p tcp --dport {{ HORIZON_UI }} --in-interface eth0 -j DNAT --to-destination {{ servervars[ CONTROLLER ].V4 }}:{{ HORIZON_UI }}
   become: true
 - iptables:
     table: nat
     chain: PREROUTING
     in_interface: eth0
     protocol: tcp
-    destination_port: "{{ MESOS_UI }}"
+    destination_port: "{{ HORIZON_UI }}"
     jump: DNAT
-    to_destination: "{{ servervars[ MESOS_MASTER ].V4 }}:{{ MESOS_UI }}"
-  become: yes
-- iptables:
-    table: nat
-    chain: PREROUTING
-    in_interface: eth0
-    protocol: tcp
-    destination_port: "{{ MARATHON_UI }}"
-    jump: DNAT
-    to_destination: "{{ servervars[ MESOS_MASTER ].V4 }}:{{ MARATHON_UI }}"
+    to_destination: "{{ servervars[ CONTROLLER ].V4 }}:{{ HORIZON_UI }}"
   become: yes
 
 - name: Start NetQ and Connect to the NetQ Telemetry Server
