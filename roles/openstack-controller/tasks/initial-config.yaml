@@ -6,6 +6,7 @@
   with_items:
   - admin-openrc
   - demo-openrc
+  - jam
 
 - name: collect flavors
   command: openstack {{ openstack.admin_credentials }} flavor list

@@ -16,9 +16,9 @@
 - include: mysql.yaml
 - include: rabbitmq.yaml
 - include: memcached.yaml
-- include: openstack-keystone.yaml
-- include: openstack-glance.yaml
-- include: openstack-neutron-controller.yaml
-- include: openstack-nova-controller.yaml
-- include: openstack-horizon.yaml
-- include: openstack-initial-config.yaml
+- include: keystone.yaml
+- include: glance.yaml
+- include: neutron-controller.yaml
+- include: nova-controller.yaml
+- include: horizon.yaml
+- include: initial-config.yaml
