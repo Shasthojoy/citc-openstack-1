@@ -34,5 +34,3 @@
   - openstack-compute
   become: true
 ...
-
- 

@@ -13,12 +13,12 @@
     name: python-openstackclient
     state: present
 
-- include: mysql.yaml
-- include: rabbitmq.yaml
-- include: memcached.yaml
-- include: keystone.yaml
-- include: glance.yaml
-- include: neutron-controller.yaml
-- include: nova-controller.yaml
-- include: horizon.yaml
-- include: initial-config.yaml
+- import_tasks: mysql.yaml
+- import_tasks: rabbitmq.yaml
+- import_tasks: memcached.yaml
+- import_tasks: keystone.yaml
+- import_tasks: glance.yaml
+- import_tasks: neutron-controller.yaml
+- import_tasks: nova-controller.yaml
+- import_tasks: horizon.yaml
+- import_tasks: initial-config.yaml
