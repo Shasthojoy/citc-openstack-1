@@ -23,8 +23,8 @@
     name: ubuntu-cloud-keyring
     state: present
 - apt_repository:
-    repo: 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu trusty-updates/mitaka  main'
-    filename: mitaka
+    repo: 'deb http://ubuntu-cloud.archive.canonical.com/ubuntu xenial-updates/pike  main'
+    filename: pike
     state: present
 - apt:
     update_cache: yes
