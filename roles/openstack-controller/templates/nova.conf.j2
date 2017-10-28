@@ -1,20 +1,18 @@
 [DEFAULT]
-dhcpbridge_flagfile=/etc/nova/nova.conf
-dhcpbridge=/usr/bin/nova-dhcpbridge
 state_path=/var/lib/nova
 lock_path=/var/lock/nova
-force_dhcp_release=True
 libvirt_use_virtio_for_bridges=True
 verbose=True
 ec2_private_dns_show_ip=True
-api_paste_config=/etc/nova/api-paste.ini
 enabled_apis = osapi_compute,metadata
-rpc_backend = rabbit
-auth_strategy = keystone
 my_ip = {{ openstack.ip[ansible_hostname] }}
-use_neutron = True
-firewall_driver = nova.virt.firewall.NoopFirewallDriver
+transport_url = rabbit://openstack:{{openstack.admin_password}}@controller
 
+[api]
+auth_strategy = keystone
+
+[wsgi]
+api_paste_config=/etc/nova/api-paste.ini
 
 [api_database]
 connection = mysql+pymysql://nova:{{openstack.admin_password}}@controller/nova_api
@@ -22,13 +20,6 @@ connection = mysql+pymysql://nova:{{openstack.admin_password}}@controller/nova_a
 
 [database]
 connection = mysql+pymysql://nova:{{openstack.admin_password}}@controller/nova
-
-
-[oslo_messaging_rabbit]
-rabbit_host = controller
-rabbit_userid = openstack
-rabbit_password = {{openstack.admin_password}}
-
 
 
 [keystone_authtoken]
