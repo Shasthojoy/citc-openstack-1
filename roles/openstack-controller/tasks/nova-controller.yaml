@@ -128,15 +128,13 @@
   command: openstack {{ openstack.args }} service create --name placement --description "Placement API" placement
   when: "'placement' not in _services.stdout"
 
-- name: add nova endpoints
-  command: openstack {{ openstack.args }} endpoint create --region RegionOne compute {{ item }} http://controller:8778/v2.1
+- name: add placement endpoints
+  command: openstack {{ openstack.args }} endpoint create --region RegionOne placement {{ item }} http://controller:8778
   with_items:
   - public
   - internal
   - admin
   when: "'placement' not in _services.stdout"
-
-
 
 - name: wait for nova to wake up
   pause:
