@@ -108,6 +108,19 @@
   - nova-common
   - nova-placement-api
 
+- name: make sure the nova services are stopped during config/db initialization for cleaner logs
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: yes
+  with_items:
+  - nova-api
+  - nova-consoleauth
+  - nova-scheduler
+  - nova-conductor
+  - nova-novncproxy
+  - apache2
+
 - name: nova config files
   template:
     src: "{{ item }}.j2"
