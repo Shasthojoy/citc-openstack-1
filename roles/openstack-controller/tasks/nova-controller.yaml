@@ -1,21 +1,7 @@
 ---
 
-# Install and prep nova
+# Create baseline database tables
 #
-- name: Install nova
-  apt:
-    name: "{{ item }}"
-    state: present
-  with_items:
-  - nova-api
-  - nova-conductor
-  - nova-consoleauth
-  - nova-novncproxy
-  - nova-scheduler
-  - nova-common
-  - nova-placement-api
-
-# Install and configure Nova
 - name: create the tables required for nova
   mysql_db:
     name: "{{ item }}"
@@ -36,6 +22,91 @@
   - nova_api
   - nova
   - nova_cell0
+
+# Collect existing state information
+#
+- name: collect services
+  command: openstack {{ openstack.args }} service list
+  register: _services
+
+- name: collect users
+  command: openstack {{ openstack.args }} user list
+  register: _users
+
+- name: collect roles
+  command: openstack {{ openstack.args }} role list
+  register: _roles
+
+- name: collect projects
+  command: openstack {{ openstack.args }} project list
+  register: _projects
+
+- name: collect domains
+  command: openstack {{ openstack.args }} domain list
+  register: _domains
+
+# Add the nova (compute) user, services, and endpoints
+#
+- name: add nova user
+  command: openstack {{ openstack.args }} user create --domain default --password {{ openstack.admin_password }} nova
+  when: "'nova' not in _users.stdout"
+
+- name: add admin role to nova user
+  command: openstack {{ openstack.args }} role add --project service --user nova admin
+  when: "'nova' not in _users.stdout"
+
+- name: add nova service
+  command: openstack {{ openstack.args }} service create --name nova --description "Openstack Compute" compute
+  when: "'nova' not in _services.stdout"
+
+- name: add nova endpoints
+  command: openstack {{ openstack.args }} endpoint create --region RegionOne compute {{ item }} http://controller:8774/v2.1
+  with_items:
+  - public
+  - internal
+  - admin
+  when: "'nova' not in _services.stdout"
+
+# Add the placement user, services, and endpoints
+#
+- name: add placement user
+  command: openstack {{ openstack.args }} user create --domain default --password {{ openstack.admin_password }} placement
+  when: "'placement' not in _users.stdout"
+
+- name: add admin role to placement user
+  command: openstack {{ openstack.args }} role add --project service --user placement admin
+  when: "'placement' not in _users.stdout"
+
+- name: add placement service
+  command: openstack {{ openstack.args }} service create --name placement --description "Placement API" placement
+  when: "'placement' not in _services.stdout"
+
+- name: add placement endpoints
+  command: openstack {{ openstack.args }} endpoint create --region RegionOne placement {{ item }} http://controller:8778
+  with_items:
+  - public
+  - internal
+  - admin
+  when: "'placement' not in _services.stdout"
+
+- name: wait for nova to wake up
+  pause:
+    seconds: 10
+
+# Install, configure, and start the nova components
+#
+- name: Install nova
+  apt:
+    name: "{{ item }}"
+    state: present
+  with_items:
+  - nova-api
+  - nova-conductor
+  - nova-consoleauth
+  - nova-novncproxy
+  - nova-scheduler
+  - nova-common
+  - nova-placement-api
 
 - name: nova config files
   template:
@@ -68,76 +139,6 @@
   - nova-novncproxy
   - apache2
 - pause:
-    seconds: 10
-
-
-# Create glance user, service, and endpoint
-- name: collect services
-  command: openstack {{ openstack.args }} service list
-  register: _services
-
-- name: collect users
-  command: openstack {{ openstack.args }} user list
-  register: _users
-
-- name: collect roles
-  command: openstack {{ openstack.args }} role list
-  register: _roles
-
-- name: collect projects
-  command: openstack {{ openstack.args }} project list
-  register: _projects
-
-- name: collect domains
-  command: openstack {{ openstack.args }} domain list
-  register: _domains
-
-# Add the nova user and nova compute services/endpoints
-#
-- name: add nova user
-  command: openstack {{ openstack.args }} user create --domain default --password {{ openstack.admin_password }} nova
-  when: "'nova' not in _users.stdout"
-
-- name: add admin role to nova user
-  command: openstack {{ openstack.args }} role add --project service --user nova admin
-  when: "'nova' not in _users.stdout"
-
-- name: add nova service
-  command: openstack {{ openstack.args }} service create --name nova --description "Openstack Compute" compute
-  when: "'nova' not in _services.stdout"
-
-- name: add nova endpoints
-  command: openstack {{ openstack.args }} endpoint create --region RegionOne compute {{ item }} http://controller:8774/v2.1
-  with_items:
-  - public
-  - internal
-  - admin
-  when: "'nova' not in _services.stdout"
-
-# Add the placement user and nova placement services/endpoints
-#
-- name: add placement user
-  command: openstack {{ openstack.args }} user create --domain default --password {{ openstack.admin_password }} placement
-  when: "'placement' not in _users.stdout"
-
-- name: add admin role to placement user
-  command: openstack {{ openstack.args }} role add --project service --user placement admin
-  when: "'placement' not in _users.stdout"
-
-- name: add placement service
-  command: openstack {{ openstack.args }} service create --name placement --description "Placement API" placement
-  when: "'placement' not in _services.stdout"
-
-- name: add placement endpoints
-  command: openstack {{ openstack.args }} endpoint create --region RegionOne placement {{ item }} http://controller:8778
-  with_items:
-  - public
-  - internal
-  - admin
-  when: "'placement' not in _services.stdout"
-
-- name: wait for nova to wake up
-  pause:
     seconds: 10
 
 ...
