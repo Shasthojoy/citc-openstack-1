@@ -38,6 +38,6 @@
   when: "'demonet' not in _networks.stdout"
 
 - name: Assign it to the cirros1
-  command: openstack {{ openstack.admin_credentials }} ip floating add 192.168.0.102 cirros1
+  command: openstack {{ openstack.admin_credentials }} ip floating add {{ FLOATING_IP }} cirros1
   when: "'demonet' not in _networks.stdout"
 ...
