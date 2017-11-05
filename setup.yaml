@@ -33,4 +33,9 @@
   roles:
   - openstack-compute
   become: true
+
+- hosts: server01
+  roles:
+  - openstack-demo
+  become: true
 ...
