@@ -22,4 +22,5 @@
 - import_tasks: nova-controller.yaml
 - import_tasks: horizon.yaml
 - import_tasks: initial-config.yaml
+- import_tasks: demo.yaml
   tags: demo
