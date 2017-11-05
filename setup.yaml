@@ -2,10 +2,12 @@
 - hosts: oob-mgmt-server
   roles:
   - internet
-
+  become: true
+  
 - hosts: switches
   roles:
   - switch-common
+  become: true
 
 - hosts: leaf01,leaf02
   roles:
@@ -36,6 +38,6 @@
 
 - hosts: server01
   roles:
-  - openstack-demo
+  - demo
   become: true
 ...

@@ -6,23 +6,23 @@
   register: _networks
 
 - name: Create demo net
-  command: neutron {{ openstack.admin_credentials }} net-create demonet
+  command: neutron {{ openstack.neutron_credentials }} net-create demonet
   when: "'demonet' not in _networks.stdout"
 
 - name: Define demonet subnet
-  command: neutron {{ openstack.admin_credentials }} subnet-create --name demonet --dns-nameserver 8.8.8.8 --gateway 200.0.0.1 demonet 200.0.0.0/24
+  command: neutron {{ openstack.neutron_credentials }} subnet-create --name demonet --dns-nameserver 8.8.8.8 --gateway 200.0.0.1 demonet 200.0.0.0/24
   when: "'demonet' not in _networks.stdout"
 
 - name: Create router to get in/out
-  command: neutron {{ openstack.admin_credentials }} router-create demorouter
+  command: neutron {{ openstack.neutron_credentials }} router-create demorouter
   when: "'demonet' not in _networks.stdout"
 
 - name: Connect the router to demonet
-  command: neutron {{ openstack.admin_credentials }} router-interface-add demorouter demonet
+  command: neutron {{ openstack.neutron_credentials }} router-interface-add demorouter demonet
   when: "'demonet' not in _networks.stdout"
 
 - name: Connect the router to the provider network
-  command: neutron {{ openstack.admin_credentials }} router-gateway-set demorouter provider
+  command: neutron {{ openstack.neutron_credentials }} router-gateway-set demorouter provider
   when: "'demonet' not in _networks.stdout"
 
 - name: Add server instances
