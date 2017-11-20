@@ -136,6 +136,7 @@
 
 - name: nova api dbsync
   shell: su -s /bin/sh -c "nova-manage cell_v2 create_cell --name=cell1 --verbose" nova
+  ignore_errors: yes
 
 - name: nova dbsync
   shell: su -s /bin/sh -c "nova-manage db sync" nova

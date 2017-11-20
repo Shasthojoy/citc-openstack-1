@@ -2,11 +2,13 @@ ansible_ssh_pass: "CumulusLinux!"
 ansible_become_pass: "CumulusLinux!"
 
 #
-# Mesos Configuration
+# Openstack external access configuration
 #
 
-CONTROLLER:  server01
-HORIZON_UI:  80
+HORIZON_HOST:  server01
+HORIZON_UI:    80
+FLOATING_IP:   192.168.0.102
+FLOATING_SSH:  2222
 
 #
 # Global connectivity options
